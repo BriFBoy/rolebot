@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,17 +25,22 @@ import java.util.Objects;
 
 @SpringBootApplication
 public class RolebotApplication extends ListenerAdapter {
-	private static final JDA jda = JDABuilder.createDefault("token")
-			.build();
+	public static RoleBotService roleBotService;
+
 
 
 	public static void main(String[] args) throws InterruptedException {
-		SpringApplication.run(RolebotApplication.class, args);
-		jda.awaitReady();
+		ApplicationContext appcon = SpringApplication.run(RolebotApplication.class, args);
+		roleBotService = appcon.getBean(RoleBotService.class);
+		roleBotService.setJda(JDABuilder.createDefault("token")
+						.addEventListeners(roleBotService.sendRoleSelectService)
+				.build());
+		roleBotService.jda.awaitReady();
+		roleBotService.commands.createCommands();
 
-		jda.getGuildById("1302710445139951657").updateCommands().addCommands(Commands.slash("sendroleselect", "sends a embed that lets you choose roles")
-				.addSubcommands(new SubcommandData("plase", "send for selecting location roles"))
-				.addSubcommands(new SubcommandData("class", "send for selecting class roles"))).queue();
+
+
+
 
 
 
