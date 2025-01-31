@@ -1,7 +1,7 @@
 package net.brifboy.rolebot.commands;
 
 
-import net.brifboy.rolebot.MessageService;
+import net.brifboy.rolebot.actions.MessageService;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -14,13 +14,13 @@ public class SendRoleSelectService extends ListenerAdapter {
     MessageService messageService;
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        if (event.getSubcommandName().equals("location")) {
+        if (event.getSubcommandName().equals(RoleBotCommands.SUBCOMMANDLOCATION)) {
             event.reply(messageService.getLocationMessage()).queue();
 
-        } else if (event.getSubcommandName().equals("class")) {
+        } else if (event.getSubcommandName().equals(RoleBotCommands.SUBCOMMANDCLASSES)) {
             event.reply(messageService.getClassMessage()).queue();
 
-        } else if (event.getSubcommandName().equals("clearroles")) {
+        } else if (event.getSubcommandName().equals(RoleBotCommands.SUBCOMMANDCLEARROLES)) {
             event.reply(messageService.getClearRolesMessage()).queue();
         }
 

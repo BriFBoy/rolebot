@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -14,10 +13,10 @@ import java.util.Scanner;
 public class RolebotApplication extends ListenerAdapter {
 	public static RoleBotService roleBotService;
 	private static final File TOKENFILE = new File(System.getProperty("user.dir") + "token.txt");
-	private static final String USERDIR = System.getProperty("user.dir");
+	private static final String APPDIR = System.getProperty("user.dir");
 
 
-	public static void main(String[] args) throws InterruptedException, IOException {
+	public static void main(String[] args) throws InterruptedException {
 		ApplicationContext appcon = SpringApplication.run(RolebotApplication.class, args);
 		roleBotService = appcon.getBean(RoleBotService.class);
 
@@ -33,14 +32,15 @@ public class RolebotApplication extends ListenerAdapter {
 		}
 
 		roleBotService.jda.awaitReady();
-		roleBotService.commands.createCommands();
+		roleBotService.roleBotCommands.createCommands();
+
 
 	}
 	private static String getToken() throws IOException {
-		System.out.println(USERDIR);
+		System.out.println(APPDIR);
         if (!TOKENFILE.exists()) {
             boolean filewascreate = TOKENFILE.createNewFile();
-            System.out.println("file was created: " + filewascreate + ": " + TOKENFILE.getPath());
+            System.out.println("file was created: " + filewascreate + " at " + TOKENFILE.getPath());
 			System.out.println("Token needed in file");
 			System.exit(0);
 		}
