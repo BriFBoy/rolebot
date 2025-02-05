@@ -22,7 +22,7 @@ public class RolebotApplication extends ListenerAdapter {
 
 		try {
 			roleBotService.setJda(JDABuilder.createDefault(getToken())
-					.addEventListeners(roleBotService.sendRoleSelectService)
+					.addEventListeners(roleBotService.commandRoleSelectService)
 							.addEventListeners(roleBotService.userInterectService)
 							.addEventListeners(roleBotService.messageLoggService)
 					.build());

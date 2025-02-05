@@ -1,6 +1,10 @@
 package net.brifboy.rolebot.actions;
 
+import net.brifboy.rolebot.Roles;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.stereotype.Service;
 
@@ -10,27 +14,30 @@ import java.util.List;
 @Service
 public class ActionService {
 
+
+
     protected static final String BUTTONFAGERLIA = "fagerlia";
     protected static final String BUTTONVOLSDALSBERGA = "volsdalsberga";
     protected static final String BUTTONCLEARROLES = "clearroles";
     protected static final String MENUCLASSES = "classes";
+    protected static final String ENTITYDEPARTMENTMENU = "departmentmenu";
+    protected static final String ENTITYCLASSMENU = "classmenu";
     protected static final String MENUOPTION1IM = "1IM";
 
     public List<Button> getLocationButtons() {
         List<Button> buttonList = new ArrayList<>();
-        Button b1 = Button.primary(BUTTONFAGERLIA, capFirstLetter(BUTTONFAGERLIA));
-        Button b2 = Button.primary(BUTTONVOLSDALSBERGA, capFirstLetter(BUTTONVOLSDALSBERGA));
-        buttonList.add(b1);
-        buttonList.add(b2);
-
+        for (Role r : Roles.departmentroles) {
+            buttonList.add(Button.primary(r.getName(), r.getName()));
+        }
         return buttonList;
 
     }
     public StringSelectMenu getClassMenu() {
-        return StringSelectMenu.create(MENUCLASSES)
-                .addOption(MENUOPTION1IM, MENUOPTION1IM)
-                .build();
-
+        List<SelectOption> sl = new ArrayList<>();
+        for (Role r : Roles.classesroles) {
+            sl.add(SelectOption.of(r.getName(), r.getName()));
+        }
+        return StringSelectMenu.create(MENUCLASSES).addOptions(sl).build();
     }
     public List<Button> getClearButtons() {
         List<Button> buttonList = new ArrayList<>();
@@ -49,6 +56,12 @@ public class ActionService {
         }
         return caped + rest;
     }
-
-
+    public EntitySelectMenu getdepartmentRoleMenu() {
+        return EntitySelectMenu.create(ENTITYDEPARTMENTMENU, EntitySelectMenu.SelectTarget.ROLE)
+                .setMaxValues(25).setMinValues(1).build();
+    }
+    public EntitySelectMenu getClassRoleMenu() {
+        return EntitySelectMenu.create(ENTITYCLASSMENU, EntitySelectMenu.SelectTarget.ROLE)
+                .setMaxValues(25).setMinValues(1).build();
+    }
 }

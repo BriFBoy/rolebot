@@ -1,7 +1,10 @@
 package net.brifboy.rolebot.actions;
 
+import net.brifboy.rolebot.RoleBotService;
+import net.brifboy.rolebot.Roles;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -15,43 +18,52 @@ public class UserInterectService extends ListenerAdapter  {
     private MessageService messageService;
     @Autowired
     private MessageLoggService messageLoggService;
+    @Autowired
+    private ActionService actionService;
 
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        switch (event.getButton().getId()) {
-            case ActionService.BUTTONFAGERLIA: {event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById("1320440327466782783")).queue();
-               this.messageService.replyClassMessageAutoDel(event); break;}
-
-            case ActionService.BUTTONVOLSDALSBERGA: {event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById("1320710889283915809")).queue();
-                this.messageService.replyClassMessageAutoDel(event); break;}
-
-            case ActionService.BUTTONCLEARROLES: {
-                for (Role role : event.getMember().getRoles()) {
-                    event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
-                }
-                event.reply("Done").submit().thenAccept((T) -> messageLoggService.deleteLatestMessage(event));;
-                break;
+        for (Role r : Roles.departmentroles) {
+            if (event.getButton().getId().equals(r.getName())) {
+                event.getGuild().addRoleToMember(event.getMember(), r).queue();
+                event.reply(messageService.getClassMessage()).setEphemeral(true).queue();
             }
-            default: {}
+        }
+        if (event.getButton().getId().equals(ActionService.BUTTONCLEARROLES)) {
+            for (Role role : event.getMember().getRoles()) {
+                event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
+            }
+            event.reply("Done").submit().thenAccept((T) -> messageLoggService.deleteLatestMessage(event));
         }
     }
 
     @Override
     public void onStringSelectInteraction(@NotNull StringSelectInteractionEvent event) {
-
-        switch (event.getSelectedOptions().getFirst().getValue()) {
-            case ActionService.MENUOPTION1IM: event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRoleById("1320516758041526293")).queue(); break;
-            default: event.reply("Something whent wrong! please try again").queue();
+        for (Role r : Roles.classesroles) {
+            if (event.getSelectedOptions().getFirst().getValue().equals(r.getName())) {
+                event.getGuild().addRoleToMember(event.getMember(), r).queue();
+            }
         }
-        event.reply("done").submit().thenAccept((v) ->messageLoggService.deleteLatestMessage(event));
+        event.reply("done").submit().thenAccept((v) -> messageLoggService.deleteLatestMessage(event));
 
        messageLoggService.deleteMessage(event.getMessage());
 
 
     }
 
+    @Override
+    public void onEntitySelectInteraction(@NotNull EntitySelectInteractionEvent event) {
+            if (event.getComponentId().equals(ActionService.ENTITYDEPARTMENTMENU)) {
+                Roles.departmentroles.clear();
+                Roles.departmentroles.addAll(event.getMentions().getRoles());
+                RoleBotService.Departmentrolesset = true;
+                event.reply("done").setEphemeral(true).queue();
+            } else if (event.getComponentId().equals(ActionService.ENTITYCLASSMENU)) {
+                Roles.classesroles.addAll(event.getMentions().getRoles());
+                RoleBotService.Classrolesset = true;
+                event.reply("done").setEphemeral(true).queue();
 
-
-
+            }
+    }
 }
