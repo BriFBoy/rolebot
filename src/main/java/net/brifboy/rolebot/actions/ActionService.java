@@ -16,13 +16,11 @@ public class ActionService {
 
 
 
-    protected static final String BUTTONFAGERLIA = "fagerlia";
-    protected static final String BUTTONVOLSDALSBERGA = "volsdalsberga";
+
     protected static final String BUTTONCLEARROLES = "clearroles";
     protected static final String MENUCLASSES = "classes";
     protected static final String ENTITYDEPARTMENTMENU = "departmentmenu";
     protected static final String ENTITYCLASSMENU = "classmenu";
-    protected static final String MENUOPTION1IM = "1IM";
 
     public List<Button> getLocationButtons() {
         List<Button> buttonList = new ArrayList<>();
